@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- High-DPI / high-refresh-rate: allow native device pixel ratio and disable tap delay -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- Site identity -->
+    <meta name="application-name" content="CSE-IDX-2024" />
+    <meta name="site-id" content="CSE-IDX-2024" />
+    <meta name="description" content="CSE Candidate Index — AI-powered UPSC Civil Services qualifier registry (Site ID: CSE-IDX-2024)" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="CSE Candidate Index [AI-SYNC] — CSE-IDX-2024" />
+    <meta property="og:description" content="Real-time UPSC Civil Services qualifier registry powered by AI. Site ID: CSE-IDX-2024" />
+    <meta property="og:type" content="website" />
+    <title>CSE Candidate Index [AI-SYNC] · CSE-IDX-2024</title>
+    <!-- Preconnect for fonts to avoid render-blocking -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- font-display=swap keeps text visible during font load -->
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Hint to the browser that we will animate transforms/opacity — allows GPU layer promotion before JS runs -->
+    <style>
+      /* Critical path: prevent flash of unstyled content */
+      html { background: #d1d1d1; }
+      /* Force GPU compositing on the root to avoid layer promotion jank during first paint */
+      #root { transform: translateZ(0); }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

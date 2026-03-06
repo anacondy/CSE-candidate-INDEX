@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+@theme {
+  --font-archivo: "Archivo Black", sans-serif;
+  --font-mono: "Space Mono", monospace;
+  --font-sans: "Inter", sans-serif;
+  --color-neon-green: #39ff14;
+}
+
+/* ── Performance baseline ────────────────────────────────────────── */
+/* Promote the document to its own compositing layer so the browser
+   can drive every animation / scroll on the GPU at whatever refresh
+   rate the display supports (60 Hz, 90 Hz, 120 Hz, 144 Hz …).       */
+html {
+  /* Smooth scrolling with GPU-friendly scroll snap */
+  scroll-behavior: smooth;
+  /* Allow the browser to render at the native display refresh rate */
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  background-color: #d1d1d1;
+  color: #000000;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Disable tap highlight on touch devices for instant response feel */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  /* Prevent layout shifts from scrollbar appearing/disappearing */
+  scrollbar-gutter: stable;
+}
+
+/* ── Lightweight noise overlay ───────────────────────────────────── */
+/* Replace the heavy SVG-filter-based noise with a CSS-only approach:
+   a small repeating data-URI PNG grain that costs ~0 GPU time because
+   it never changes and lives on its own composited layer.             */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.18;
+  /* Static 4-pixel checkerboard grain — zero repaint cost */
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAEElEQVQImWNgYGD4z0AEAAMAAQABNjN9GQAAAABJRkJggg==");
+  background-repeat: repeat;
+  background-size: 4px 4px;
+  /* Own compositing layer — never triggers a repaint */
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+/* ── Vignette overlay ────────────────────────────────────────────── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 49;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.12) 150%);
+  /* Own compositing layer */
+  transform: translateZ(0);
+}
+
+/* ── Typography helpers ──────────────────────────────────────────── */
+.font-brutal {
+  font-family: "Archivo Black", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+}
+
+.font-tech {
+  font-family: "Space Mono", monospace;
+}
+
+/* ── GPU-composited fixed decoration elements ────────────────────── */
+/* Anything that is fixed/animated gets its own layer so it can be
+   updated without triggering a full-page repaint.                    */
+.gpu-layer {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ── Scrollable containers ───────────────────────────────────────── */
+/* Contain scrolling to the element — avoids the browser having to
+   scroll the entire page coordinate system (cheaper on high-Hz).     */
+.scroll-contain {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Table row transitions ───────────────────────────────────────── */
+/* Use only GPU-friendly properties (opacity, transform) for hover
+   transitions so the compositor thread handles them without involving
+   the main thread.                                                    */
+.table-row-hover {
+  will-change: background-color;
+  transition: background-color 80ms linear, color 80ms linear;
+}
+
+/* ── Custom scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: #d1d1d1;
+  border-left: 1px solid #000;
+}
+::-webkit-scrollbar-thumb {
+  background: #000;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #222;
+}
+
+/* ── Text selection ──────────────────────────────────────────────── */
+::selection {
+  background: #39ff14;
+  color: #000;
+}
+
+/* ── Reduce-motion: respect system preference ────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
